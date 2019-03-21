@@ -81,7 +81,10 @@ class MatchEndDate(object):
         doc_type = loader_context['doc_type']
         selector = loader_context['selector']
 
-        context_id = value.xpath('@contextRef')[0].extract()
+        try:
+            context_id = value.xpath('@contextRef')[0].extract()
+        except:
+            return IntermediateValue('', 0.0, '0', None)
         try:
             context = selector.xpath('//*[@id="%s"]' % context_id)[0]
         except IndexError:
@@ -452,8 +455,8 @@ class ReportItemLoader(XmlXPathItemLoader):
         doc_type = self._get_doc_type()
 
         # ignore document that is not 10-Q or 10-K
-        if not (doc_type and doc_type.split('/')[0] in ('10-Q', '10-K')):
-            return
+        # if not (doc_type and doc_type.split('/')[0] in ('10-Q', '10-K')):
+        #     return
 
         # some documents set their amendment flag in DocumentType, e.g., '10-Q/A',
         # instead of setting it in AmendmentFlag
