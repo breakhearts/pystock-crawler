@@ -111,8 +111,6 @@ class MatchEndDate(object):
                 # log.msg(u'Unit ref not USD: %s in %s' % (unit_ref, url), log.WARNING)
                 return None
         except Exception as e:
-            import traceback
-            print traceback.print_exc()
             pass
 
         date = instant = start_date = end_date = None
