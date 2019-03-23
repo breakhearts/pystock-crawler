@@ -80,10 +80,10 @@ class MatchEndDate(object):
         doc_end_date_str = loader_context['end_date']
         doc_type = loader_context['doc_type']
         selector = loader_context['selector']
-
         try:
             context_id = value.xpath('@contextRef')[0].extract()
         except:
+            print(value)
             return IntermediateValue('', 0.0, '0', None)
         try:
             context = selector.xpath('//*[@id="%s"]' % context_id)[0]
@@ -161,7 +161,10 @@ class ImdSumMembersOr(object):
 def date_range_matches_doc_type(doc_type, start_date, end_date):
     delta_days = (end_date - start_date).days
     return ((doc_type == '10-Q' and delta_days < 120 and delta_days > 60) or
-            (doc_type == '10-K' and delta_days < 380 and delta_days > 350))
+            (doc_type == '10-K' and delta_days < 380 and delta_days > 350) or
+            (doc_type == '20-Q' and delta_days < 120 and delta_days > 60) or
+            (doc_type == '20-F' and delta_days < 380 and delta_days > 350)
+            )
 
 
 def get_amend(values):
