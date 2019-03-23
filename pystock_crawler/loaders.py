@@ -495,7 +495,7 @@ class ReportItemLoader(XmlXPathItemLoader):
         self.add_value('doc_type', doc_type)
 
         self.add_xpaths('revenues', [
-            '//us-gaap:SalesRevenueNet',
+            # '//us-gaap:SalesRevenueNet',
             '//us-gaap:Revenues',
             '//us-gaap:SalesRevenueGoodsNet',
             '//us-gaap:SalesRevenueServicesNet',
