@@ -83,8 +83,12 @@ class MatchEndDate(object):
         try:
             context_id = value.xpath('@contextRef')[0].extract()
         except:
-            print(value)
-            return IntermediateValue('', 0.0, '0', None)
+            try:
+                url = loader_context['response'].url
+            except KeyError:
+                url = None
+            log.msg(u'Cannot find contextRef: {0} in {1}'.format(value, url), log.WARNING)
+            return None
         try:
             context = selector.xpath('//*[@id="%s"]' % context_id)[0]
         except IndexError:
@@ -94,6 +98,22 @@ class MatchEndDate(object):
                 url = None
             log.msg(u'Cannot find context: %s in %s' % (context_id, url), log.WARNING)
             return None
+
+        try:
+            context_unit_ref_id = value.xpath('@unitRef')[0].extract()
+            context_unit_ref = selector.xpath('//*[@id="%s"]' % context_unit_ref_id)[0]
+            unit_ref = context_unit_ref.xpath(".//*[local-name()='measure']/text()")[0].extract().strip()
+            if unit_ref.lower() != "iso4217:usd":
+                # try:
+                #     url = loader_context['response'].url
+                # except KeyError:
+                #     url = None
+                # log.msg(u'Unit ref not USD: %s in %s' % (unit_ref, url), log.WARNING)
+                return None
+        except Exception as e:
+            import traceback
+            print traceback.print_exc()
+            pass
 
         date = instant = start_date = end_date = None
         try:
@@ -495,7 +515,8 @@ class ReportItemLoader(XmlXPathItemLoader):
         self.add_value('doc_type', doc_type)
 
         self.add_xpaths('revenues', [
-            # '//us-gaap:SalesRevenueNet',
+            '//us-gaap:SalesRevenueNet',
+            '//us-gaap:RevenueFromContractWithCustomerExcludingAssessedTax',
             '//us-gaap:Revenues',
             '//us-gaap:SalesRevenueGoodsNet',
             '//us-gaap:SalesRevenueServicesNet',
